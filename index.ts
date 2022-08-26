@@ -1,8 +1,9 @@
 import 'dotenv/config';
-import { getTable, createTable, deleteTable } from './src/modules/DynamoClient.js'
+import { getTable, createTable, deleteTable, putItem } from './src/modules/DynamoClient.js'
 import { ComposedTable } from './src/entities/ComposedTable.js'
+import { Collection } from './src/entities/Collection.js'
 
-const ProductsTable = new ComposedTable("Products", ["CollectionId", "S"], ["NamedId", "S"])
+const ProductsTable = new ComposedTable("Products", ["primaryKey", "S"], ["sortKey", "S"])
 const tableCreation = async (doCreate : boolean, doDelete : boolean) => {
   const retrieved = await getTable(ProductsTable.getName())
   if(!retrieved && doCreate) {
@@ -16,6 +17,7 @@ const tableCreation = async (doCreate : boolean, doDelete : boolean) => {
 
 tableCreation(false, false)
 
-// const collection = new Collection('COLID1', 'user1', 'collection 1', 'this is the short des', 'complete description <b>which will be a blog post</b>', ['url 1', 'url 2'], 10)
+console.log(ProductsTable.getName())
+const collection = new Collection('COLID1', 'BLOG', 'collection 1', 'this is the short des', 'complete description <b>which will be a blog post</b>', ['url 1', 'url 2'], 'user1', 10)
 
-// console.log(collection.toItem())
+// putItem(collection.toItem(ProductsTable.getName()))
