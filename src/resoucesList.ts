@@ -2,19 +2,23 @@
 // ************DynamoDB Tables*************
 const ProductsTable = {
   tableName: "Products",
-  primaryKey: "primaryKey",
-  sortKey: "sortKey",
+  keys:[
+    {name: "primaryKey", type: "S"},
+    {name: "sortKey", type: "S"}
+  ],
   globalIndexList: [
     {IndexName: "blog-list", keys:["sortKey"], NonKeyAttributes: ["shortDescription", "title", "images"]}
   ]
 }
 // const OrdersTable = {
 //   tableName: "Orders",
-//   primaryKey: "primaryKey",
-//   sortKey: "sortKey",
-//   // include other keys
+//   keys:[
+//     {name: "primaryKey", type: "S"},
+//     {name: "sortKey", type: "S"},
+//     {name: "userKey", type: "S"}
+//   ],
 //   globalIndexList: [
-//     {IndexName: "user-list", keys:["sortKey", "primaryKey"], NonKeyAttributes: ["name", "email"]}
+//     {IndexName: "user-list", keys:["sortKey", "userKey"], NonKeyAttributes: ["name", "email"]}
 //   ]
 // }
 

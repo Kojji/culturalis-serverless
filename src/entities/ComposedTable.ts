@@ -1,9 +1,14 @@
 import {
   GetItemInput,
   QueryCommandInput,
-  CreateTableCommandInput
+  CreateTableCommandInput,
+  AttributeDefinition
 } from '@aws-sdk/client-dynamodb';
 
+interface key {
+  name: string
+  type: string
+}
 interface secIndex {
   IndexName: string
   keys: string[]
@@ -11,15 +16,12 @@ interface secIndex {
 }
 export class ComposedTable {
   tableName : string
-  keys : string[]
+  keys : key[]
   secIndexKeys: secIndex[]
 
-  constructor(name : string, primaryKey : string, sortKey : string, globalIndexKeys: secIndex[]) {
+  constructor(name : string, keys: key[], globalIndexKeys: secIndex[]) {
     this.tableName = name
-    this.keys = [
-      primaryKey,
-      sortKey
-    ]
+    this.keys = keys
     this.secIndexKeys = globalIndexKeys
   }
 
@@ -33,23 +35,19 @@ export class ComposedTable {
 
   getTableParams() : CreateTableCommandInput {
     return {
-      AttributeDefinitions: [
-        {
-          AttributeName: this.keys[0],
-          AttributeType: "S",
-        },
-        {
-          AttributeName: this.keys[1],
-          AttributeType: "S",
-        },
-      ],
+      AttributeDefinitions: this.keys.map((item) : AttributeDefinition =>{
+        return {
+          AttributeName: item.name,
+          AttributeType: item.type
+        }
+      }),
       KeySchema: [
         {
-          AttributeName: this.keys[0],
+          AttributeName: this.keys[0].name,
           KeyType: "HASH",
         },
         {
-          AttributeName: this.keys[1],
+          AttributeName: this.keys[1].name,
           KeyType: "RANGE",
         },
       ],
@@ -93,8 +91,8 @@ export class ComposedTable {
     return {
       TableName: this.tableName,
       Key: {
-        [this.keys[0]]: {"S": primaryValue}, 
-        [this.keys[1]]: {"S": sortValue}
+        [this.keys[0].name]: {"S": primaryValue}, 
+        [this.keys[1].name]: {"S": sortValue}
       }
     }
   }

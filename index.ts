@@ -14,7 +14,7 @@ try {
     throw new Error("Cleaning finished")
   }
 
-  const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.primaryKey, ProductsTable.sortKey, ProductsTable.globalIndexList)
+  const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.keys, ProductsTable.globalIndexList)
 
   // const collectionItem = await getItem(productsTable.getItemParams("COL#COLID", "BLOG"))
   const collectionItems = await queryFromParams(productsTable.getQueryBySortParams("BLOG"))
