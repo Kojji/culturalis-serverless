@@ -16,18 +16,34 @@ export class Collection {
     return CollectionItem.keySets;
   }
 
-  toItem(TableName : string) {
+  buildItem() {
     return {
-      TableName,
+      TableName: CollectionItem.tableName,
+      Item: {
+        primaryKey: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
+        sortKey: {"S": `${CollectionItem.keySets[2]}${this.sortKey}`},
+        title: {"S": this.title},
+        shortDescription: {"S": this.shortDescription},
+        description: {"S": this.description},
+        images: {"SS": this.images},
+        UserKey: {"S": this.UserKey},
+        sellPercent: {"N": `${this.sellPercent}`}
+      },
+    }
+  }
+
+  toItem() {
+    return {
+      TableName: CollectionItem.tableName,
       Item: {
         primaryKey: {"S": this.primaryKey},
         sortKey: {"S": this.sortKey},
         title: {"S": this.title},
         shortDescription: {"S": this.shortDescription},
         description: {"S": this.description},
-        images: {"L": this.images},
+        images: {"SS": this.images},
         UserKey: {"S": this.UserKey},
-        sellPercent: {"S": this.sellPercent}
+        sellPercent: {"N": `${this.sellPercent}`}
       },
     }
   }

@@ -9,18 +9,20 @@ import { ProductsTable } from './resoucesList.js'
 // setup elasticache
 // setup api gateway
 
-async function runSetup() {
+async function runSetup(type: string) {
+  const creation = type === 'setup' ? true : false
+  const deletion = type === 'clean' ? true : false
+
   const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.primaryKey, ProductsTable.sortKey)
-  const tableCreation = async (doCreate : boolean, doDelete : boolean) => {
-    const retrieved = await getTable(productsTable.getName())
-    if(!retrieved && doCreate) {
-      return await createTable(productsTable.getTableParams())
-    } else if(doDelete) {
-      return await deleteTable(productsTable.getName())
-    }
+  const retrieved = await getTable(productsTable.getName())
+  if(!retrieved && creation) {
+    console.log(await createTable(productsTable.getTableParams()))
+  } else if(deletion) {
+    console.log(await deleteTable(productsTable.getName()))
   }
   
-  console.log(tableCreation(false, false))
+
+  
   return true
 }
 
