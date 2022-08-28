@@ -53,10 +53,13 @@ async function putItem(item : PutItemCommandInput) {
   }
 }
 
-async function queryByPrimary(params : QueryCommandInput) {
+async function queryFromParams(params : QueryCommandInput) {
   try {
     const data = await dbclient.send(new QueryCommand(params));
-    return data
+    return {
+      count: data.Count,
+      items: data.Items
+    }
   } catch (err) {
     console.log("Error", err);
   }
@@ -65,10 +68,18 @@ async function queryByPrimary(params : QueryCommandInput) {
 async function getItem(params : GetItemInput) {
   try {
     const data = await dbclient.send(new GetItemCommand(params));
-    return data
+    return data.Item
   } catch (err) {
     console.log("Error", err);
   }
 }
 
-export { dbclient, getTable, createTable, deleteTable, putItem, queryByPrimary, getItem };
+export {
+  dbclient,
+  getTable,
+  createTable,
+  deleteTable,
+  putItem,
+  queryFromParams,
+  getItem
+};

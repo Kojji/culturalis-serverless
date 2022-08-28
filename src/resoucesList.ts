@@ -3,8 +3,20 @@
 const ProductsTable = {
   tableName: "Products",
   primaryKey: "primaryKey",
-  sortKey: "sortKey"
+  sortKey: "sortKey",
+  globalIndexList: [
+    {IndexName: "blog-list", keys:["sortKey"], NonKeyAttributes: ["shortDescription", "title", "images"]}
+  ]
 }
+// const OrdersTable = {
+//   tableName: "Orders",
+//   primaryKey: "primaryKey",
+//   sortKey: "sortKey",
+//   // include other keys
+//   globalIndexList: [
+//     {IndexName: "user-list", keys:["sortKey", "primaryKey"], NonKeyAttributes: ["name", "email"]}
+//   ]
+// }
 
 // ************DynamoDB Items*************
 const CollectionItem = {
@@ -18,5 +30,6 @@ const CollectionItem = {
 
 export { 
   ProductsTable,
+  // OrdersTable,
   CollectionItem,
 }

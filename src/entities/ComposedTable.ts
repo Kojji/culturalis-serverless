@@ -4,16 +4,23 @@ import {
   CreateTableCommandInput
 } from '@aws-sdk/client-dynamodb';
 
+interface secIndex {
+  IndexName: string
+  keys: string[]
+  NonKeyAttributes: string[]
+}
 export class ComposedTable {
   tableName : string
   keys : string[]
+  secIndexKeys: secIndex[]
 
-  constructor(name : string, primaryKey : string, sortKey : string) {
+  constructor(name : string, primaryKey : string, sortKey : string, globalIndexKeys: secIndex[]) {
     this.tableName = name
     this.keys = [
       primaryKey,
       sortKey
     ]
+    this.secIndexKeys = globalIndexKeys
   }
 
   getName() {
@@ -46,6 +53,31 @@ export class ComposedTable {
           KeyType: "RANGE",
         },
       ],
+      GlobalSecondaryIndexes: this.secIndexKeys.length === 0 ? undefined : this.secIndexKeys.map((item)=>{
+        return {
+          IndexName: item.IndexName,
+          KeySchema: item.keys.length > 0 ? 
+            [{
+              AttributeName: item.keys[0],
+              KeyType: "HASH"
+            },
+             {
+              AttributeName: item.keys[1],
+              KeyType: "RANGE"
+            }] : [{
+              AttributeName: item.keys[0],
+              KeyType: "HASH"
+            }],
+          Projection: {
+            ProjectionType: "INCLUDE",
+            NonKeyAttributes: item.NonKeyAttributes
+          },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1,
+          }
+        }
+      }),
       ProvisionedThroughput: {
         ReadCapacityUnits: 1,
         WriteCapacityUnits: 1,
@@ -72,6 +104,17 @@ export class ComposedTable {
       KeyConditionExpression: `${this.keys[0]} = :pk`,
       ExpressionAttributeValues: {
         ":pk": { "S": primaryValue },
+      },
+      TableName: this.tableName,
+    };
+  }
+
+  getQueryBySortParams(sortValue: string) : QueryCommandInput {
+    return {
+      KeyConditionExpression: `${this.keys[1]} = :sk`,
+      IndexName: this.secIndexKeys[0].IndexName,
+      ExpressionAttributeValues: {
+        ":sk": { "S": sortValue },
       },
       TableName: this.tableName,
     };

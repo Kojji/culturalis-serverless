@@ -10,7 +10,8 @@ export class Collection {
     public description: string,
     public images: string[],
     public UserKey: string,
-    public sellPercent: number
+    public sellPercent: number,
+    public tags: string[]
   ){}
 
   getTableKeys() {
@@ -42,7 +43,8 @@ export class Collection {
         description: {"S": this.description},
         images: {"SS": this.images},
         UserKey: {"S": this.UserKey},
-        sellPercent: {"N": `${this.sellPercent}`}
+        sellPercent: {"N": `${this.sellPercent}`},
+        tags: {"SS": this.tags}
       },
     }
   }
@@ -58,7 +60,8 @@ export class Collection {
         description: {"S": this.description},
         images: {"SS": this.images},
         UserKey: {"S": this.UserKey},
-        sellPercent: {"N": `${this.sellPercent}`}
+        sellPercent: {"N": `${this.sellPercent}`},
+        tags: {"SS": this.tags}
       },
     }
   }

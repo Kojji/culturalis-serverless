@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { putItem, queryByPrimary, getItem } from './src/modules/DynamoClient.js'
+import { putItem, queryFromParams, getItem } from './src/modules/DynamoClient.js'
 import { runSetup } from './src/setup.js'
 import { Collection } from './src/entities/Collection.js'
 import { ComposedTable } from './src/entities/ComposedTable.js'
@@ -14,13 +14,13 @@ try {
     throw new Error("Cleaning finished")
   }
 
-  const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.primaryKey, ProductsTable.sortKey)
+  const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.primaryKey, ProductsTable.sortKey, ProductsTable.globalIndexList)
 
-  // const collectionItem = await getItem(productsTable.getItemParams("COL#COLID2", "BLOG"))
-  const collectionItems = await queryByPrimary(productsTable.getQueryByPrimaryParams("COL#COLID2"))
+  // const collectionItem = await getItem(productsTable.getItemParams("COL#COLID", "BLOG"))
+  const collectionItems = await queryFromParams(productsTable.getQueryBySortParams("BLOG"))
   console.log(collectionItems)
 
-  // const collection = new Collection('COLID2', '', 'collection 1', 'this is the short des', 'complete description <b>which will be a blog post</b>', ['url 1', 'url 2'], 'user1', 10)
+  // const collection = new Collection('COLID2', '', 'collection 1', 'this is the short des', 'complete description <b>which will be a blog post</b>', ['url 1', 'url 2'], 'user1', 10, ['tag1'])
   
   // putItem(collection.buildItem())
   // const collections = await queryByPrimary("Products", "COL#COLID2")

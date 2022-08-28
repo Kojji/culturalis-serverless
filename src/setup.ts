@@ -13,7 +13,7 @@ async function runSetup(type: string) {
   const creation = type === 'setup' ? true : false
   const deletion = type === 'clean' ? true : false
 
-  const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.primaryKey, ProductsTable.sortKey)
+  const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.primaryKey, ProductsTable.sortKey, ProductsTable.globalIndexList)
   const retrieved = await getTable(productsTable.getName())
   if(!retrieved && creation) {
     console.log(await createTable(productsTable.getTableParams()))
