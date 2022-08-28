@@ -1,23 +1,18 @@
-interface Key {
-  key: string
-  type: string
-}
+import {
+  GetItemInput,
+  QueryCommandInput,
+  CreateTableCommandInput
+} from '@aws-sdk/client-dynamodb';
 
 export class ComposedTable {
   tableName : string
-  keys : Key[]
+  keys : string[]
 
-  constructor(name : string, primaryKey : string[], sortKey : string[]) {
+  constructor(name : string, primaryKey : string, sortKey : string) {
     this.tableName = name
     this.keys = [
-      {
-        key: primaryKey[0],
-        type: primaryKey[1]
-      },
-      {
-        key: sortKey[0],
-        type: sortKey[1]
-      }
+      primaryKey,
+      sortKey
     ]
   }
 
@@ -29,25 +24,25 @@ export class ComposedTable {
     return this.keys
   }
 
-  getTableParams() {
+  getTableParams() : CreateTableCommandInput {
     return {
       AttributeDefinitions: [
         {
-          AttributeName: this.keys[0].key,
-          AttributeType: this.keys[0].type,
+          AttributeName: this.keys[0],
+          AttributeType: "S",
         },
         {
-          AttributeName: this.keys[1].key,
-          AttributeType: this.keys[1].type,
+          AttributeName: this.keys[1],
+          AttributeType: "S",
         },
       ],
       KeySchema: [
         {
-          AttributeName: this.keys[0].key,
+          AttributeName: this.keys[0],
           KeyType: "HASH",
         },
         {
-          AttributeName: this.keys[1].key,
+          AttributeName: this.keys[1],
           KeyType: "RANGE",
         },
       ],
@@ -60,5 +55,25 @@ export class ComposedTable {
         StreamEnabled: false,
       }
     }
+  }
+
+  getItemParams(primaryValue: string, sortValue: string) : GetItemInput {
+    return {
+      TableName: this.tableName,
+      Key: {
+        [this.keys[0]]: {"S": primaryValue}, 
+        [this.keys[1]]: {"S": sortValue}
+      }
+    }
+  }
+
+  getQueryByPrimaryParams(primaryValue: string) : QueryCommandInput {
+    return {
+      KeyConditionExpression: `${this.keys[0]} = :pk`,
+      ExpressionAttributeValues: {
+        ":pk": { "S": primaryValue },
+      },
+      TableName: this.tableName,
+    };
   }
 }

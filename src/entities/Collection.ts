@@ -1,4 +1,5 @@
-import { CollectionItem } from '../resoucesList.js'
+import { PutItemCommandInput } from '@aws-sdk/client-dynamodb';
+import { CollectionItem, ProductsTable } from '../resoucesList.js'
 
 export class Collection {
   constructor(
@@ -13,14 +14,24 @@ export class Collection {
   ){}
 
   getTableKeys() {
-    return CollectionItem.keySets;
+    return {
+      primaryKey: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
+      sortKey: {"S": `${CollectionItem.keySets[2]}${this.sortKey}`}
+    };
+  }
+
+  getTableKeyNames() {
+    return {
+      primaryKey: ["primaryKey", "S"],
+      sortKey: ["sortKey", "S"]
+    }
   }
 
   getTableName() {
     return CollectionItem.tableName
   }
 
-  buildItem() {
+  buildItem() : PutItemCommandInput {
     return {
       TableName: CollectionItem.tableName,
       Item: {

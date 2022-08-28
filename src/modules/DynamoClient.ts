@@ -4,7 +4,12 @@ import {
   CreateTableCommand,
   DeleteTableCommand,
   PutItemCommand,
-  QueryCommand
+  QueryCommand,
+  GetItemCommand,
+  GetItemInput,
+  QueryCommandInput,
+  PutItemCommandInput,
+  CreateTableCommandInput
 } from '@aws-sdk/client-dynamodb';
 
 const dbclient = new DynamoDBClient({ region: process.env.AWS_REGION });
@@ -18,7 +23,7 @@ async function getTable(TableName : string) {
   }
 }
 
-async function createTable(tableParams: any) {
+async function createTable(tableParams: CreateTableCommandInput) {
   try {
     const data = await dbclient.send(new CreateTableCommand(tableParams));
     console.log("Table Created", tableParams.TableName);
@@ -39,7 +44,7 @@ async function deleteTable(TableName : string) {
   }
 }
 
-async function putItem(item : any) {
+async function putItem(item : PutItemCommandInput) {
   try {
     const data = await dbclient.send(new PutItemCommand(item));
     console.log("Success - item added or updated", data);
@@ -48,15 +53,8 @@ async function putItem(item : any) {
   }
 }
 
-async function queryByPrimary(tableName: string, primaryKey: string) {
+async function queryByPrimary(params : QueryCommandInput) {
   try {
-    const params = {
-      KeyConditionExpression: "primaryKey = :pk",
-      ExpressionAttributeValues: {
-        ":pk": { S: primaryKey },
-      },
-      TableName: tableName,
-    };
     const data = await dbclient.send(new QueryCommand(params));
     return data
   } catch (err) {
@@ -64,4 +62,13 @@ async function queryByPrimary(tableName: string, primaryKey: string) {
   }
 }
 
-export { dbclient, getTable, createTable, deleteTable, putItem, queryByPrimary };
+async function getItem(params : GetItemInput) {
+  try {
+    const data = await dbclient.send(new GetItemCommand(params));
+    return data
+  } catch (err) {
+    console.log("Error", err);
+  }
+}
+
+export { dbclient, getTable, createTable, deleteTable, putItem, queryByPrimary, getItem };

@@ -2,8 +2,8 @@
 // ************DynamoDB Tables*************
 const ProductsTable = {
   tableName: "Products",
-  primaryKey: ["primaryKey", "S"],
-  sortKey: ["sortKey", "S"]
+  primaryKey: "primaryKey",
+  sortKey: "sortKey"
 }
 
 // ************DynamoDB Items*************
