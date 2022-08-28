@@ -16,6 +16,10 @@ export class Collection {
     return CollectionItem.keySets;
   }
 
+  getTableName() {
+    return CollectionItem.tableName
+  }
+
   buildItem() {
     return {
       TableName: CollectionItem.tableName,

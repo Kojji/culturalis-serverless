@@ -3,7 +3,8 @@ import {
   DescribeTableCommand,
   CreateTableCommand,
   DeleteTableCommand,
-  PutItemCommand
+  PutItemCommand,
+  QueryCommand
 } from '@aws-sdk/client-dynamodb';
 
 const dbclient = new DynamoDBClient({ region: process.env.AWS_REGION });
@@ -47,4 +48,20 @@ async function putItem(item : any) {
   }
 }
 
-export { dbclient, getTable, createTable, deleteTable, putItem };
+async function queryByPrimary(tableName: string, primaryKey: string) {
+  try {
+    const params = {
+      KeyConditionExpression: "primaryKey = :pk",
+      ExpressionAttributeValues: {
+        ":pk": { S: primaryKey },
+      },
+      TableName: tableName,
+    };
+    const data = await dbclient.send(new QueryCommand(params));
+    return data
+  } catch (err) {
+    console.log("Error", err);
+  }
+}
+
+export { dbclient, getTable, createTable, deleteTable, putItem, queryByPrimary };
