@@ -16,9 +16,11 @@ try {
 
   const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.keys, ProductsTable.globalIndexList)
 
-  // const collectionItem = await getItem(productsTable.getItemParams("COL#COLID", "BLOG"))
-  const collectionItems = await queryFromParams(productsTable.getQueryBySortParams("BLOG"))
-  console.log(collectionItems)
+  const collectionItem = await getItem(productsTable.getItemParams("COL#COLID3", "BLOG"))
+  // const collectionItems = await queryFromParams(productsTable.getQueryBySortParams("BLOG"))
+
+  const newItem = new Collection(collectionItem)
+  console.log(newItem)
 
   // const collection = new Collection('COLID2', '', 'collection 1', 'this is the short des', 'complete description <b>which will be a blog post</b>', ['url 1', 'url 2'], 'user1', 10, ['tag1'])
   

@@ -1,18 +1,28 @@
 import { PutItemCommandInput } from '@aws-sdk/client-dynamodb';
-import { CollectionItem, ProductsTable } from '../resoucesList.js'
+import { CollectionItem } from '../resoucesList.js'
 
 export class Collection {
+  public primaryKey: string
+  public sortKey: string
+  public title: string
+  public shortDescription: string
+  public description: string
+  public images: string[]
+  public UserKey: string
+  public sellPercent: number
+
   constructor(
-    public primaryKey: string,
-    public sortKey: string,
-    public title: string,
-    public shortDescription: string,
-    public description: string,
-    public images: string[],
-    public UserKey: string,
-    public sellPercent: number,
-    public tags: string[]
-  ){}
+    collectionItem: any
+  ){
+    this.primaryKey = collectionItem.primaryKey
+    this.sortKey = collectionItem.sortKey
+    this.title = collectionItem.title
+    this.shortDescription = collectionItem.shortDescription
+    this.description = collectionItem.description
+    this.images = collectionItem.images
+    this.UserKey = collectionItem.UserKey
+    this.sellPercent = collectionItem.sellPercent
+  }
 
   getTableKeys() {
     return {
@@ -41,10 +51,9 @@ export class Collection {
         title: {"S": this.title},
         shortDescription: {"S": this.shortDescription},
         description: {"S": this.description},
-        images: {"SS": this.images},
+        images: {"L": this.images.map((image)=>{return {"S": image}})},
         UserKey: {"S": this.UserKey},
-        sellPercent: {"N": `${this.sellPercent}`},
-        tags: {"SS": this.tags}
+        sellPercent: {"N": `${this.sellPercent}`}
       },
     }
   }
@@ -58,10 +67,9 @@ export class Collection {
         title: {"S": this.title},
         shortDescription: {"S": this.shortDescription},
         description: {"S": this.description},
-        images: {"SS": this.images},
+        images: {"L": this.images.map((image)=>{return {"S": image}})},
         UserKey: {"S": this.UserKey},
-        sellPercent: {"N": `${this.sellPercent}`},
-        tags: {"SS": this.tags}
+        sellPercent: {"N": `${this.sellPercent}`}
       },
     }
   }

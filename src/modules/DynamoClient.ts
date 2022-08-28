@@ -11,6 +11,7 @@ import {
   PutItemCommandInput,
   CreateTableCommandInput
 } from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 const dbclient = new DynamoDBClient({ region: process.env.AWS_REGION });
 
@@ -68,7 +69,11 @@ async function queryFromParams(params : QueryCommandInput) {
 async function getItem(params : GetItemInput) {
   try {
     const data = await dbclient.send(new GetItemCommand(params));
-    return data.Item
+    if(data.Item) {
+      return unmarshall(data.Item)
+    } else {
+      return undefined
+    }
   } catch (err) {
     console.log("Error", err);
   }
