@@ -1,3 +1,5 @@
+import { CollectionItem } from '../resoucesList.js'
+
 export class Collection {
   constructor(
     public primaryKey: string,
@@ -10,18 +12,22 @@ export class Collection {
     public sellPercent: number
   ){}
 
+  getTableKeys() {
+    return CollectionItem.keySets;
+  }
+
   toItem(TableName : string) {
     return {
       TableName,
       Item: {
-        primaryKey: this.primaryKey,
-        sortKey: this.sortKey,
-        title: this.title,
-        shortDescription: this.shortDescription,
-        description: this.description,
-        images: this.images,
-        UserKey: this.UserKey,
-        sellPercent: this.sellPercent
+        primaryKey: {"S": this.primaryKey},
+        sortKey: {"S": this.sortKey},
+        title: {"S": this.title},
+        shortDescription: {"S": this.shortDescription},
+        description: {"S": this.description},
+        images: {"L": this.images},
+        UserKey: {"S": this.UserKey},
+        sellPercent: {"S": this.sellPercent}
       },
     }
   }

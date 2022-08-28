@@ -2,9 +2,9 @@ import {
   DynamoDBClient,
   DescribeTableCommand,
   CreateTableCommand,
-  DeleteTableCommand
+  DeleteTableCommand,
+  PutItemCommand
 } from '@aws-sdk/client-dynamodb';
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const dbclient = new DynamoDBClient({ region: process.env.AWS_REGION });
 
@@ -40,7 +40,7 @@ async function deleteTable(TableName : string) {
 
 async function putItem(item : any) {
   try {
-    const data = await dbclient.send(new PutCommand(item));
+    const data = await dbclient.send(new PutItemCommand(item));
     console.log("Success - item added or updated", data);
   } catch (err) {
     console.log("Error", err);
