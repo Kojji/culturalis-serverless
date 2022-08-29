@@ -9,7 +9,9 @@ import {
   GetItemInput,
   QueryCommandInput,
   PutItemCommandInput,
-  CreateTableCommandInput
+  CreateTableCommandInput,
+  UpdateItemCommandInput,
+  UpdateItemCommand
 } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
@@ -48,7 +50,21 @@ async function deleteTable(TableName : string) {
 async function putItem(item : PutItemCommandInput) {
   try {
     const data = await dbclient.send(new PutItemCommand(item));
-    console.log("Success - item added or updated", data);
+    console.log("Success - item added", data);
+  } catch (err) {
+    console.log("Error", err);
+  }
+}
+
+async function updateItem(item : UpdateItemCommandInput) {
+  try {
+    const data = await dbclient.send(new UpdateItemCommand(item));
+    if(data) {
+      console.log("Success - item updated");
+      return true
+    } else {
+      return false
+    }
   } catch (err) {
     console.log("Error", err);
   }
@@ -86,5 +102,6 @@ export {
   deleteTable,
   putItem,
   queryFromParams,
-  getItem
+  getItem,
+  updateItem
 };

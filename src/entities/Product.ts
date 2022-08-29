@@ -1,4 +1,4 @@
-import { PutItemCommandInput } from '@aws-sdk/client-dynamodb';
+import { PutItemCommandInput, UpdateItemCommandInput } from '@aws-sdk/client-dynamodb';
 import { ProductItem } from '../resoucesList.js'
 
 interface productPerColor {
@@ -11,10 +11,10 @@ interface productPerColor {
 }
 
 interface discount {
-  percent: string
-  value: string
+  percentage: string
+  discounted: string
   active: boolean
-  date?: string
+  limitDate: string
 }
 
 export class Product {
@@ -49,10 +49,10 @@ export class Product {
     this.price = productItem.price
     this.sizes = productItem.sizes
     this.discount = {
-      percent: productItem.discount.percent,
-      value: productItem.discount.value,
+      percentage: productItem.discount.percentage,
+      discounted: productItem.discount.discounted,
       active: productItem.discount.active,
-      date: productItem.discount.date
+      limitDate: productItem.discount.limitDate
     }
   }
 
@@ -79,10 +79,10 @@ export class Product {
         price: {"N": this.price},
         sizes: {"L": this.sizes.map((size)=>{return {"S": size}})},
         discount: {"M": {
-          percent: {"N": this.discount.percent},
-          value: {"N": this.discount.value},
+          percentage: {"N": this.discount.percentage},
+          discounted: {"N": this.discount.discounted},
           active: {"BOOL": this.discount.active},
-          date: this.discount.date ? {"S": this.discount.date} : {"S": ""}
+          limitDate: this.discount.limitDate ? {"S": this.discount.limitDate} : {"S": ""}
         }},
         colors: {"L": this.colors.map((color)=>{
           return {
@@ -112,10 +112,10 @@ export class Product {
         price: {"N": this.price},
         sizes: {"L": this.sizes.map((size)=>{return {"S": size}})},
         discount: {"M": {
-          percent: {"N": this.discount.percent},
-          value: {"N": this.discount.value},
+          percentage: {"N": this.discount.percentage},
+          discounted: {"N": this.discount.discounted},
           active: {"BOOL": this.discount.active},
-          date: {"S": this.discount.date}
+          limitDate: {"S": this.discount.limitDate}
         }},
         colors: {"L": this.colors.map((color)=>{
           return {
@@ -133,7 +133,31 @@ export class Product {
     }
   }
 
+  updateDiscount(updateInfo : discount) : UpdateItemCommandInput {
+    this.discount = {
+      percentage: updateInfo.percentage,
+      discounted: updateInfo.discounted,
+      active: updateInfo.active,
+      limitDate: updateInfo.limitDate
+    }
+
+    return {
+      TableName: ProductItem.tableName,
+      Key: {
+        primaryKey: {"S": this.primaryKey},
+        sortKey: {"S": this.sortKey}
+      },
+      UpdateExpression: "set discount.percentage = :p, discount.discounted = :v, discount.active = :a, discount.limitDate = :d",
+      ExpressionAttributeValues: {
+        ":p": {"N": this.discount.percentage},
+        ":v": {"N": this.discount.discounted},
+        ":a": {"BOOL": this.discount.active},
+        ":d": {"S": this.discount.limitDate}
+      },
+      ReturnValues: "ALL_NEW"
+    }
+  }
+
   // insert color
-  // insert discount
   // get item
 }

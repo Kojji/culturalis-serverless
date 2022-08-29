@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { putItem, queryFromParams, getItem } from './src/modules/DynamoClient.js'
+import { putItem, queryFromParams, getItem, updateItem } from './src/modules/DynamoClient.js'
 import { runSetup } from './src/setup.js'
 import { Collection } from './src/entities/Collection.js'
 import { Product } from './src/entities/Product.js'
@@ -17,17 +17,26 @@ try {
 
   const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.keys, ProductsTable.globalIndexList)
 
-  const collectionItem = await getItem(productsTable.getItemParams("COL#COLID3", "PROD#ID1"))
+  const collectionItem = await getItem(productsTable.getItemParams("COL#COLID4", "PROD#ID1"))
   // const collectionItems = await queryFromParams(productsTable.getQueryBySortParams("BLOG"))
 
   const parsedProduct = new Product(collectionItem)
 
-  console.log(parsedProduct)
+  const updated = parsedProduct.updateDiscount({
+    percentage: '10.40',
+    discounted: '1.97',
+    active: true,
+    limitDate: '2022-09-24'
+  })
+
+  const updatedItem = await updateItem(updated)
+
+  console.log(updatedItem)
   // const newItem = new Collection(collectionItem)
 
 
   // const newProduct = new Product({
-  //   primaryKey: "COLID3",
+  //   primaryKey: "COLID4",
   //   sortKey: "ID1",
   //   title:"Produto 1",
   //   type: "Camiseta",
@@ -35,17 +44,17 @@ try {
   //   price: "12.99",
   //   sizes: ["PP", "M"],
   //   colors: [],
-  //   date: {
-    // percent: '0.00',
-    // value: '0.00',
-    // active: false,
-    // date: ''
+  //   discount: {
+  //     percentage: '0.00',
+  //     discounted: '0.00',
+  //     active: false,
+  //     limitDate: ''
   //   }
   // })
   // const collection = new Collection('COLID2', '', 'collection 1', 'this is the short des', 'complete description <b>which will be a blog post</b>', ['url 1', 'url 2'], 'user1', 10, ['tag1'])
   
   // const newItem = putItem(newProduct.buildItem())
-  // console.log(newProduct.buildItem())
+  // console.log(newItem)
 
   // const collections = await queryByPrimary("Products", "COL#COLID2")
 
