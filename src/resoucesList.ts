@@ -26,7 +26,13 @@ const ProductsTable = {
 const CollectionItem = {
   tableName: "Products",
   itemName: "Collection",
-  keySets: ["COL#", "PROD#", "BLOG"]
+  keySets: ["COL#", "BLOG"]
+}
+
+const ProductItem = {
+  tableName: "Products",
+  itemName: "Production",
+  keySets: ["COL#", "PROD#"]
 }
 
 // *************************
@@ -36,4 +42,5 @@ export {
   ProductsTable,
   // OrdersTable,
   CollectionItem,
+  ProductItem
 }

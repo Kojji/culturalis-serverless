@@ -27,15 +27,8 @@ export class Collection {
   getTableKeys() {
     return {
       primaryKey: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
-      sortKey: {"S": `${CollectionItem.keySets[2]}${this.sortKey}`}
+      sortKey: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`}
     };
-  }
-
-  getTableKeyNames() {
-    return {
-      primaryKey: ["primaryKey", "S"],
-      sortKey: ["sortKey", "S"]
-    }
   }
 
   getTableName() {
@@ -47,7 +40,7 @@ export class Collection {
       TableName: CollectionItem.tableName,
       Item: {
         primaryKey: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
-        sortKey: {"S": `${CollectionItem.keySets[2]}${this.sortKey}`},
+        sortKey: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`},
         title: {"S": this.title},
         shortDescription: {"S": this.shortDescription},
         description: {"S": this.description},
