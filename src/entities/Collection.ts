@@ -1,5 +1,5 @@
 import { PutItemCommandInput } from '@aws-sdk/client-dynamodb';
-import { CollectionItem } from '../resoucesList.js'
+import { CollectionItem, ProductsTable } from '../resoucesList.js'
 
 export class Collection {
   public primaryKey: string
@@ -26,8 +26,8 @@ export class Collection {
 
   getTableKeys() {
     return {
-      primaryKey: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
-      sortKey: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`}
+      [ProductsTable.keys[0].name]: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
+      [ProductsTable.keys[1].name]: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`}
     };
   }
 
@@ -39,8 +39,8 @@ export class Collection {
     return {
       TableName: CollectionItem.tableName,
       Item: {
-        primaryKey: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
-        sortKey: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`},
+        [ProductsTable.keys[0].name]: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
+        [ProductsTable.keys[1].name]: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`},
         title: {"S": this.title},
         shortDescription: {"S": this.shortDescription},
         description: {"S": this.description},
@@ -55,8 +55,8 @@ export class Collection {
     return {
       TableName: CollectionItem.tableName,
       Item: {
-        primaryKey: {"S": this.primaryKey},
-        sortKey: {"S": this.sortKey},
+        [ProductsTable.keys[0].name]: {"S": this.primaryKey},
+        [ProductsTable.keys[1].name]: {"S": this.sortKey},
         title: {"S": this.title},
         shortDescription: {"S": this.shortDescription},
         description: {"S": this.description},

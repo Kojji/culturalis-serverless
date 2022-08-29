@@ -21,15 +21,25 @@ try {
   // const collectionItems = await queryFromParams(productsTable.getQueryBySortParams("BLOG"))
 
   const parsedProduct = new Product(collectionItem)
+  // console.log(parsedProduct)
 
-  const updated = parsedProduct.updateDiscount({
-    percentage: '10.40',
-    discounted: '1.97',
+  const toBuild = parsedProduct.insertColor({
     active: true,
-    limitDate: '2022-09-24'
+    images: ['url', 'outroUrl'],
+    files: ['urlFile', 'file 1'],
+    colorCode: '#22332',
+    extraInfo: 'camisa: color, estampa: cor2',
+    featured: false
   })
 
-  const updatedItem = await updateItem(updated)
+  // const updated = parsedProduct.updateDiscount({
+  //   percentage: '10.40',
+  //   discounted: '1.97',
+  //   active: true,
+  //   limitDate: '2022-09-24'
+  // })
+
+  const updatedItem = await updateItem(toBuild)
 
   console.log(updatedItem)
   // const newItem = new Collection(collectionItem)
@@ -58,7 +68,6 @@ try {
 
   // const collections = await queryByPrimary("Products", "COL#COLID2")
 
-  // console.log(collections.Items)
 
 } catch(e) {
   console.log(e)

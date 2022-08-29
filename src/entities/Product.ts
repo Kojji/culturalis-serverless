@@ -1,5 +1,5 @@
 import { PutItemCommandInput, UpdateItemCommandInput } from '@aws-sdk/client-dynamodb';
-import { ProductItem } from '../resoucesList.js'
+import { ProductItem, ProductsTable } from '../resoucesList.js'
 
 interface productPerColor {
   active: boolean
@@ -58,8 +58,8 @@ export class Product {
 
   getTableKeys() {
     return {
-      primaryKey: {"S": `${ProductItem.keySets[0]}${this.primaryKey}`},
-      sortKey: {"S": `${ProductItem.keySets[1]}${this.sortKey}`}
+      [ProductsTable.keys[0].name]: {"S": `${ProductItem.keySets[0]}${this.primaryKey}`},
+      [ProductsTable.keys[1].name]: {"S": `${ProductItem.keySets[1]}${this.sortKey}`}
     };
   }
 
@@ -71,8 +71,8 @@ export class Product {
     return {
       TableName: ProductItem.tableName,
       Item: {
-        primaryKey: {"S": `${ProductItem.keySets[0]}${this.primaryKey}`},
-        sortKey: {"S": `${ProductItem.keySets[1]}${this.sortKey}`},
+        [ProductsTable.keys[0].name]: {"S": `${ProductItem.keySets[0]}${this.primaryKey}`},
+        [ProductsTable.keys[1].name]: {"S": `${ProductItem.keySets[1]}${this.sortKey}`},
         title: {"S": this.title},
         type: {"S": this.type},
         description: {"S": this.description},
@@ -104,8 +104,8 @@ export class Product {
     return {
       TableName: ProductItem.tableName,
       Item: {
-        primaryKey: {"S": this.primaryKey},
-        sortKey: {"S": this.sortKey},
+        [ProductsTable.keys[0].name]: {"S": this.primaryKey},
+        [ProductsTable.keys[1].name]: {"S": this.sortKey},
         title: {"S": this.title},
         type: {"S": this.type},
         description: {"S": this.description},
@@ -144,8 +144,8 @@ export class Product {
     return {
       TableName: ProductItem.tableName,
       Key: {
-        primaryKey: {"S": this.primaryKey},
-        sortKey: {"S": this.sortKey}
+        [ProductsTable.keys[0].name]: {"S": this.primaryKey},
+        [ProductsTable.keys[1].name]: {"S": this.sortKey}
       },
       UpdateExpression: "set discount.percentage = :p, discount.discounted = :v, discount.active = :a, discount.limitDate = :d",
       ExpressionAttributeValues: {
@@ -158,6 +158,41 @@ export class Product {
     }
   }
 
-  // insert color
-  // get item
+  insertColor(updateInfo : productPerColor) : UpdateItemCommandInput {
+    const newColor = {
+      extraInfo: updateInfo.extraInfo,
+      colorCode: updateInfo.colorCode,
+      active: updateInfo.active,
+      featured: updateInfo.featured,
+      images: updateInfo.images,
+      files: updateInfo.files
+    }
+
+    this.colors.push(newColor)
+
+    return {
+      TableName: ProductItem.tableName,
+      Key: {
+        [ProductsTable.keys[0].name]: {"S": this.primaryKey},
+        [ProductsTable.keys[1].name]: {"S": this.sortKey}
+      },
+      UpdateExpression: "set #colors = list_append(#colors, :newColor)",
+      ExpressionAttributeNames: {"#colors": "colors"},
+      ExpressionAttributeValues: {
+        ":newColor": { "L": [
+          {"M": {
+            extraInfo: {"S": updateInfo.extraInfo},
+            colorCode: {"S": updateInfo.colorCode},
+            active: {"BOOL": updateInfo.active},
+            featured: {"BOOL": updateInfo.featured},
+            images:  {"L": updateInfo.images.map((image)=>{return {"S": image}})},
+            files: {"L": updateInfo.files.map((file)=>{return {"S": file}})}
+          }}
+        ]}
+      },
+      ReturnValues: "ALL_NEW"
+    }
+  }
+  // update color
+  // remove color
 }
