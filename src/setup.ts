@@ -1,5 +1,5 @@
 import { getTable, createTable, deleteTable } from './modules/DynamoClient.js'
-import { ComposedTable } from './entities/ComposedTable.js'
+import { ComposedTable } from './entities/index.js'
 import { ProductsTable, UsersTable } from './resoucesList.js'
 
 // create tables
