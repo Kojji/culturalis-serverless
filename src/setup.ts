@@ -1,6 +1,6 @@
 import { getTable, createTable, deleteTable } from './modules/DynamoClient.js'
 import { ComposedTable } from './entities/ComposedTable.js'
-import { ProductsTable} from './resoucesList.js'
+import { ProductsTable, UsersTable } from './resoucesList.js'
 
 // create tables
 // create incognito pool
@@ -14,12 +14,20 @@ async function runSetup(type: string) {
   const deletion = type === 'clean' ? true : false
 
   const productsTable = new ComposedTable(ProductsTable.tableName, ProductsTable.keys, ProductsTable.globalIndexList)
-  // const productsTable = new ComposedTable(OrdersTable.tableName, OrdersTable.keys, OrdersTable.globalIndexList)
-  const retrieved = await getTable(productsTable.getName())
-  if(!retrieved && creation) {
+  const checkProductsTableExists = await getTable(productsTable.getName())
+  if(!checkProductsTableExists && creation) {
     console.log(await createTable(productsTable.getTableParams()))
-  } else if(deletion) {
+  } else if(checkProductsTableExists && deletion) {
     console.log(await deleteTable(productsTable.getName()))
+  }
+
+  const usersTable = new ComposedTable(UsersTable.tableName, UsersTable.keys, UsersTable.globalIndexList)
+  const checkUsersTableExists = await getTable(usersTable.getName())
+  if(!checkUsersTableExists && creation) {
+    console.log(usersTable.getTableParams().GlobalSecondaryIndexes)
+    console.log(await createTable(usersTable.getTableParams()))
+  } else if(checkUsersTableExists && deletion) {
+    console.log(await deleteTable(usersTable.getName()))
   }
   
 

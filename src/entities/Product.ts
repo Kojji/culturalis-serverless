@@ -58,8 +58,8 @@ export class Product {
 
   getTableKeys() {
     return {
-      [ProductsTable.keys[0].name]: {"S": `${ProductItem.keySets[0]}${this.primaryKey}`},
-      [ProductsTable.keys[1].name]: {"S": `${ProductItem.keySets[1]}${this.sortKey}`}
+      [ProductsTable.keys[0].name]: {"S": `${this.primaryKey}`},
+      [ProductsTable.keys[1].name]: {"S": `${this.sortKey}`}
     };
   }
 

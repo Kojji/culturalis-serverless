@@ -54,7 +54,7 @@ export class ComposedTable {
       GlobalSecondaryIndexes: this.secIndexKeys.length === 0 ? undefined : this.secIndexKeys.map((item)=>{
         return {
           IndexName: item.IndexName,
-          KeySchema: item.keys.length > 0 ? 
+          KeySchema: item.keys.length > 1 ? 
             [{
               AttributeName: item.keys[0],
               KeyType: "HASH"

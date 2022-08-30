@@ -26,8 +26,8 @@ export class Collection {
 
   getTableKeys() {
     return {
-      [ProductsTable.keys[0].name]: {"S": `${CollectionItem.keySets[0]}${this.primaryKey}`},
-      [ProductsTable.keys[1].name]: {"S": `${CollectionItem.keySets[1]}${this.sortKey}`}
+      [ProductsTable.keys[0].name]: {"S": `${this.primaryKey}`},
+      [ProductsTable.keys[1].name]: {"S": `${this.sortKey}`}
     };
   }
 

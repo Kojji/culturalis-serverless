@@ -50,10 +50,10 @@ try {
   // })
 
   // console.log(toBuild)
-  const updatedItem = await updateItem(toBuild)
+  // const updatedItem = await updateItem(toBuild)
 
 
-  console.log(updatedItem)
+  // console.log(updatedItem)
   // const newItem = new Collection(collectionItem)
 
 
