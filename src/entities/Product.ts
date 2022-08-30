@@ -193,6 +193,39 @@ export class Product {
       ReturnValues: "ALL_NEW"
     }
   }
-  // update color
-  // remove color
+
+  updateColor(index : number, updateInfo : productPerColor) : UpdateItemCommandInput {
+    const updateColor = {
+      extraInfo: updateInfo.extraInfo,
+      colorCode: updateInfo.colorCode,
+      active: updateInfo.active,
+      featured: updateInfo.featured,
+      images: updateInfo.images,
+      files: updateInfo.files
+    }
+
+    this.colors[index] = updateColor
+
+    return {
+      TableName: ProductItem.tableName,
+      Key: {
+        [ProductsTable.keys[0].name]: {"S": this.primaryKey},
+        [ProductsTable.keys[1].name]: {"S": this.sortKey}
+      },
+      UpdateExpression: `set colors[${index}] = :newColor`,
+      ExpressionAttributeValues: {
+        ":newColor": {
+          "M": {
+            extraInfo: {"S": updateInfo.extraInfo},
+            colorCode: {"S": updateInfo.colorCode},
+            active: {"BOOL": updateInfo.active},
+            featured: {"BOOL": updateInfo.featured},
+            images:  {"L": updateInfo.images.map((image)=>{return {"S": image}})},
+            files: {"L": updateInfo.files.map((file)=>{return {"S": file}})}
+          }
+        }
+      },
+      ReturnValues: "ALL_NEW"
+    }
+  }
 }
