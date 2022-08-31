@@ -2,6 +2,7 @@ import { PutItemCommandInput, UpdateItemCommandInput } from '@aws-sdk/client-dyn
 import { ProductItem, ProductsTable } from '../resoucesList.js'
 
 interface productPerColor {
+  id: string
   active: boolean
   images: string[]
   files: string[]
@@ -38,6 +39,7 @@ export class Product {
     this.description = productItem.description
     this.colors = productItem.colors.map((color : any)=>{
       return {
+        id: color.id,
         active: color.active,
         images: color.images,
         files: color.files,
@@ -87,6 +89,7 @@ export class Product {
         colors: {"L": this.colors.map((color)=>{
           return {
             "M": {
+              id: {"S": color.id},
               active: {"BOOL": color.active},
               images: {"L": color.images.map((image)=>{return {"S": image}})},
               files: {"L": color.files.map((file)=>{return {"S": file}})},
@@ -120,6 +123,7 @@ export class Product {
         colors: {"L": this.colors.map((color)=>{
           return {
             "M": {
+              id: {"S": color.id},
               active: {"BOOL": color.active},
               images: {"L": color.images.map((image)=>{return {"S": image}})},
               files: {"L": color.files.map((file)=>{return {"S": file}})},
@@ -160,6 +164,7 @@ export class Product {
 
   insertColor(updateInfo : productPerColor) : UpdateItemCommandInput {
     const newColor = {
+      id: updateInfo.id,
       extraInfo: updateInfo.extraInfo,
       colorCode: updateInfo.colorCode,
       active: updateInfo.active,
@@ -181,6 +186,7 @@ export class Product {
       ExpressionAttributeValues: {
         ":newColor": { "L": [
           {"M": {
+            id: {"S": updateInfo.id},
             extraInfo: {"S": updateInfo.extraInfo},
             colorCode: {"S": updateInfo.colorCode},
             active: {"BOOL": updateInfo.active},
@@ -196,6 +202,7 @@ export class Product {
 
   updateColor(index : number, updateInfo : productPerColor) : UpdateItemCommandInput {
     const updateColor = {
+      id: updateInfo.id,
       extraInfo: updateInfo.extraInfo,
       colorCode: updateInfo.colorCode,
       active: updateInfo.active,
@@ -216,6 +223,7 @@ export class Product {
       ExpressionAttributeValues: {
         ":newColor": {
           "M": {
+            id: {"S": updateInfo.id},
             extraInfo: {"S": updateInfo.extraInfo},
             colorCode: {"S": updateInfo.colorCode},
             active: {"BOOL": updateInfo.active},
