@@ -11,11 +11,11 @@ import {
 } from './src/entities/index.js'
 
 try {
-  if(process.argv[process.argv.length - 1] == 'setup') {
-    await runSetup('setup')
+  if(process.argv[process.argv.length - 2] == 'setup') {
+    await runSetup('setup', process.argv[process.argv.length - 1])
     throw new Error("Setup finished")
-  } else if(process.argv[process.argv.length - 1] == 'clean') {
-    await runSetup('clean')
+  } else if(process.argv[process.argv.length - 2] == 'clean') {
+    await runSetup('clean', process.argv[process.argv.length - 1])
     throw new Error("Cleaning finished")
   }
 

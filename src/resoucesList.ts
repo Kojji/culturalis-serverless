@@ -71,6 +71,13 @@ const OrderItem = {
   keySets: ["USER#", "ORD#"] // sortKey = date+number
 }
 
+// ************APIGateway*************
+const RestAPIInstance = {
+  id: process.env.API_ID,
+  name: "Culturalis-API"
+}
+
+
 // *************************
 
 
@@ -83,5 +90,6 @@ export {
   UserAdressItem,
   UserItem,
   CartItem,
-  OrderItem
+  OrderItem,
+  RestAPIInstance
 }
