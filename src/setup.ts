@@ -1,7 +1,7 @@
 import { getTable, createTable, deleteTable } from './modules/DynamoClient.js'
 import { ComposedTable } from './entities/index.js'
 import { ProductsTable, UsersTable, RestAPIInstance } from './resoucesList.js'
-import { setupRESTAPI, getAPI, cleanRESTAPI } from './modules/APIGateway.js'
+import { setupRESTAPI, getAPI, cleanRESTAPI, getResources } from './modules/APIGateway.js'
 
 // create tables
 // create incognito pool
@@ -37,15 +37,17 @@ async function runSetup(type: string, option: string) {
     if(RestAPIInstance.id) {
       const APIExists = await getAPI(RestAPIInstance.id)
       if(!APIExists && creation) {
-        setupRESTAPI(RestAPIInstance.name)
+        const restAPIId = await setupRESTAPI(RestAPIInstance.name)
       } else if(APIExists && deletion) {
         cleanRESTAPI()
       }
     } else if(creation) {
-      setupRESTAPI(RestAPIInstance.name)
+      const restAPIId = await setupRESTAPI(RestAPIInstance.name)
     }
   
+    getResources(RestAPIInstance.id)
   }
+
 
   return true
 }

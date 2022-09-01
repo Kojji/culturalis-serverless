@@ -73,9 +73,16 @@ const OrderItem = {
 
 // ************APIGateway*************
 const RestAPIInstance = {
-  id: process.env.API_ID,
+  id: "pc4ece65sc",
   name: "Culturalis-API"
 }
+
+const APIRoutes = [
+  {
+    id: "dxx2otid4l",
+    path: "/"
+  }
+]
 
 
 // *************************
@@ -91,5 +98,6 @@ export {
   UserItem,
   CartItem,
   OrderItem,
-  RestAPIInstance
+  RestAPIInstance,
+  APIRoutes
 }
